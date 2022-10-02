@@ -7,7 +7,7 @@ $$ dV_t = \kappa (\theta - V_t) dt + \xi \sqrt{V_t} dW_t^{(1)}, $$
 
 $$ dS_t = r S_t dt + S_t \sqrt{V_t} dW_t^{(2)}, $$
 
-$$ dW_t^{(1)}dW_t^{(1)} = \rho dt. $$
+$$ dW_t^{(1)}dW_t^{(2)} = \rho dt. $$
 
 Default parameters:
 - `V_0`$= V_0 = 0.3$: initial volatility.
