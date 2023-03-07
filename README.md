@@ -24,7 +24,7 @@ Running `heston.py` will generate the CIR process (the stochastic volatility pro
 
 ![image](https://user-images.githubusercontent.com/62266775/193455318-aa78114f-c59d-4e71-838f-05ea02ea83fd.png)
 
-Running `monte_carlo_heston_model_options_pricing.py` will generate call and put prices over a specified strike range and plot them.
+Running `heston_options.py` will generate call and put prices over a specified strike range and plot them.
 
 ![image](https://user-images.githubusercontent.com/62266775/193455471-c1afa572-a4e6-4cf8-b064-2f503ba535da.png)
 
