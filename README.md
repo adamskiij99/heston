@@ -1,5 +1,5 @@
-# Heston model options pricer
-Monte Carlo options pricer under the Heston model.
+# Heston model simulator and options pricer
+Euler-Maruyama simulation of the Heston model with option pricing functionality.
 
 Volatility $V_t$ and asset price $S_t$ follow:
 
@@ -24,7 +24,7 @@ Running `heston.py` will generate the CIR process (stochastic volatility process
 
 ![image](https://user-images.githubusercontent.com/62266775/193455318-aa78114f-c59d-4e71-838f-05ea02ea83fd.png)
 
-Running `monte_carlo_heston_model_options_pricing.py` will generate call and put prices over a specified strike range (default m = 100 000 for Monte Carlo) and plot them.
+Running `monte_carlo_heston_model_options_pricing.py` will generate call and put prices over a specified strike range and plot them.
 
 ![image](https://user-images.githubusercontent.com/62266775/193455471-c1afa572-a4e6-4cf8-b064-2f503ba535da.png)
 
