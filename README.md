@@ -20,7 +20,7 @@ Default parameters:
 - `r`$=r = 0.1$: risk-free rate / drift.
 - `S_0`$=S_0 = 50$: initial asset price.
 
-Running `heston.py` will generate the CIR process (stochastic volatility process) and the corresponding asset price process and plot them.
+Running `heston.py` will generate the CIR process (the stochastic volatility process) and the corresponding asset price process and plot them.
 
 ![image](https://user-images.githubusercontent.com/62266775/193455318-aa78114f-c59d-4e71-838f-05ea02ea83fd.png)
 
