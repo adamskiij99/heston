@@ -28,7 +28,7 @@ T = 30/365
 N = 5000
 
 def heston_paths(T=T, N=N, V_0=V_0, S_0=S_0, th=th, k=k, xi=xi, rho=rho, r=r,
-           method="Maruyama", terminal_S=False):
+           method="Maruyama"):
     
     # Generate correlated BMs
     dt = T / N
@@ -51,10 +51,7 @@ def heston_paths(T=T, N=N, V_0=V_0, S_0=S_0, th=th, k=k, xi=xi, rho=rho, r=r,
         b = S[i-1]*np.sqrt(np.maximum(0, V[i-1]))
         S[i] = S[i-1] + a*dt + b*dW2[i-1]
     
-    if terminal_S:
-        return S[-1]
-    else:
-        return S, V
+    return S, V
 
 if __name__ == "__main__":
     
