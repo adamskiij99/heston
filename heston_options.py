@@ -1,5 +1,6 @@
 import numpy as np
 from matplotlib import pyplot as plt
+from scipy.integrate import quad
 
 # initial variance
 V_0 = 0.3
@@ -16,7 +17,7 @@ rho = -0.6
 # risk-free rate
 r = 0
 # terminal time
-T = 30/365
+T = 1
 # no. time steps
 N = 5000
 
@@ -35,6 +36,7 @@ def heston_terminal_values(sample_paths=100, T=T, N=N, V_0=V_0, S_0=S_0,
         dW2s = rho*dW1s + np.sqrt(1-rho*rho)*np.random.normal(0, np.sqrt(dt),
                                                               sample_paths)
         
+        V_buffer = V_t
         # Euler-Maruyama for V
         a = k*(th-V_t)
         b = xi*np.sqrt(np.maximum(0, V_t))
@@ -42,12 +44,12 @@ def heston_terminal_values(sample_paths=100, T=T, N=N, V_0=V_0, S_0=S_0,
         
         # Euler-Maruyama for S
         a = r*S_t
-        b = S_t*np.sqrt(np.maximum(0, V_t))
+        b = S_t*np.sqrt(np.maximum(0, V_buffer))
         S_t = S_t + a*dt + b*dW2s
     
     return S_t
 
-# The following two functions generate call and put prices from scratch.
+# The following two functions approximate call and put prices from scratch.
 # DO NOT use these if you already have samples of the stock's value at time T;
 # instead you should compute the value of a call with the command
 #       np.mean(np.maximum(S-K, 0))*np.exp(-r*T)
@@ -63,6 +65,59 @@ def hestonPut(K, sample_paths=100, T=T, N=N, V_0=V_0, S_0=S_0,
               th=th, k=k, xi=xi, rho=rho, r=r):
     terminal_values = heston_terminal_values(sample_paths, T, N)
     return np.mean(np.maximum(K - terminal_values, 0)) * np.exp(-r*T)
+
+# The following two functions analytically compute call and put prices.
+# They rely upon two quantities depending on the parameters, P1 and P2,
+# which are analogous to d1 and d2 in Black-Scholes. They are returned from p.
+def hestonAnalyticalCall(K, V_0=V_0, th=th, k=k, xi=xi, rho=rho,
+                         S_0=S_0, T=T, r=r):
+    P1, P2 = p(K, V_0=V_0, th=th, k=k, xi=xi, rho=rho,
+                             S_0=S_0, T=T, r=r)
+    C = S_0*P1 - np.exp(-r*T)*K*P2
+    return C
+
+def hestonAnalyticalPut(K, V_0=V_0, th=th, k=k, xi=xi, rho=rho,
+                         S_0=S_0, T=T, r=r):
+    C = hestonAnalyticalCall(K, V_0=V_0, th=th, k=k, xi=xi, rho=rho,
+                             S_0=S_0, T=T, r=r)
+    # Using put-call parity
+    P = np.exp(-r*T)*K - S_0 + C
+    return P
+
+def p(K, V_0=V_0, th=th, k=k, xi=xi, rho=rho, S_0=S_0, T=T, r=r):
+    # Define the characteristic function phi of log-spot Heston stock
+    def phi(u):
+        a = k - xi*rho*u*1j
+        b = np.sqrt(a**2 + (xi**2)*(u**2 + u*1j))
+        A1 = (u**2 + u*1j) * np.sinh(0.5*b*T)
+        A2 = b*np.cosh(0.5*b*T) + a*np.sinh(0.5*b*T)
+        A = A1 / A2
+        D = np.log(b) + 0.5*(k-b)*T - np.log(0.5*(b+a)+0.5*(b-a)*np.exp(-b*T))
+        return np.exp(u*(np.log(S_0)+r*T)*1j - (T*k*th*rho*u/xi)*1j
+                      - V_0*A + (2*k*th*D)/(xi**2))
+    def integrand1(u):
+        return ((np.exp(-u*np.log(K)*1j))/(u*S_0*np.exp(r*T)*1j) * phi(u-1j)).real
+    integral1 = quad(integrand1, 0, 1000)[0]
+    def integrand2(u):
+        return ((np.exp(-u*np.log(K)*1j))/(u*1j) * phi(u)).real
+    integral2 = quad(integrand2, 0, 1000)[0]
+    return 0.5+integral1/np.pi, 0.5+integral2/np.pi
+
+# def p2(K, V_0=V_0, th=th, k=k, xi=xi, rho=rho, S_0=S_0, T=T, r=r):
+#     # Define the characteristic function phi of log-spot Heston stock
+#     def phi(u):
+#         a = k - xi*rho*u*1j
+#         b = np.sqrt(a**2 + (xi**2)*(u**2 + u*1j))
+#         A1 = (u**2 + u*1j)
+#         A2 = b*np.cosh(0.5*b*T) + a*np.sinh(0.5*b*T)
+#         A = A1 / A2
+#         D = np.log(b) + 0.5*(k-b)*T - np.log(0.5*(b+a)+0.5*(b-a)*np.exp(-b*T))
+#         return np.exp(u*(np.log(S_0)+r*T)*1j - (T*k*th*rho*u/xi)*1j
+#                       - V_0*A + (2*k*th*D)/(xi**2))
+#     def integrand(u):
+#         return ((np.exp(-u*np.log(K)*1j))/(u*S_0*np.exp(r*T)*1j) * phi(u-1j)).real
+#     integral = quad(integrand, 0, np.inf)[0]
+#     return 0.5 + integral / np.pi
 
 if __name__ == "__main__":
     
