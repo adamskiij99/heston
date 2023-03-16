@@ -24,7 +24,7 @@ rho = -0.6
 r = 0
 
 # Use Euler-Maruyama method to simulate V with terminal time T and N steps
-T = 30/365
+T = 1
 N = 5000
 
 def heston_paths(T=T, N=N, V_0=V_0, S_0=S_0, th=th, k=k, xi=xi, rho=rho, r=r,

@@ -103,21 +103,21 @@ def p(K, V_0=V_0, th=th, k=k, xi=xi, rho=rho, S_0=S_0, T=T, r=r):
     integral2 = quad(integrand2, 0, 1000)[0]
     return 0.5+integral1/np.pi, 0.5+integral2/np.pi
 
-def p2(K, V_0=V_0, th=th, k=k, xi=xi, rho=rho, S_0=S_0, T=T, r=r):
-    # Define the characteristic function phi of log-spot Heston stock
-    def phi(u):
-        a = k - xi*rho*u*1j
-        b = np.sqrt(a**2 + (xi**2)*(u**2 + u*1j))
-        A1 = (u**2 + u*1j)
-        A2 = b*np.cosh(0.5*b*T) + a*np.sinh(0.5*b*T)
-        A = A1 / A2
-        D = np.log(b) + 0.5*(k-b)*T - np.log(0.5*(b+a)+0.5*(b-a)*np.exp(-b*T))
-        return np.exp(u*(np.log(S_0)+r*T)*1j - (T*k*th*rho*u/xi)*1j
-                      - V_0*A + (2*k*th*D)/(xi**2))
-    def integrand(u):
-        return ((np.exp(-u*np.log(K)*1j))/(u*S_0*np.exp(r*T)*1j) * phi(u-1j)).real
-    integral = quad(integrand, 0, np.inf)[0]
-    return 0.5 + integral / np.pi
+# def p2(K, V_0=V_0, th=th, k=k, xi=xi, rho=rho, S_0=S_0, T=T, r=r):
+#     # Define the characteristic function phi of log-spot Heston stock
+#     def phi(u):
+#         a = k - xi*rho*u*1j
+#         b = np.sqrt(a**2 + (xi**2)*(u**2 + u*1j))
+#         A1 = (u**2 + u*1j)
+#         A2 = b*np.cosh(0.5*b*T) + a*np.sinh(0.5*b*T)
+#         A = A1 / A2
+#         D = np.log(b) + 0.5*(k-b)*T - np.log(0.5*(b+a)+0.5*(b-a)*np.exp(-b*T))
+#         return np.exp(u*(np.log(S_0)+r*T)*1j - (T*k*th*rho*u/xi)*1j
+#                       - V_0*A + (2*k*th*D)/(xi**2))
+#     def integrand(u):
+#         return ((np.exp(-u*np.log(K)*1j))/(u*S_0*np.exp(r*T)*1j) * phi(u-1j)).real
+#     integral = quad(integrand, 0, np.inf)[0]
+#     return 0.5 + integral / np.pi
 
 if __name__ == "__main__":
     
